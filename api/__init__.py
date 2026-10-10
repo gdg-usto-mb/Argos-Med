@@ -1,1 +1,0 @@
-"""Argos-Med API Package"""

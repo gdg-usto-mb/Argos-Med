@@ -1,1 +1,0 @@
-"""Argos-Med Engine Package"""
