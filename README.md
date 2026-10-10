@@ -4,11 +4,6 @@
   <img src="assets/logo.png" alt="Argos-Med Logo" width="160" style="border-radius: 12px; margin: 8px;" />
 </p>
 
-<p align="center">
-  <img src="assets/usto_logo.png" alt="Université des Sciences et de la Technologie d'Oran Mohamed-Boudiaf" height="75" style="margin: 0 16px; vertical-align: middle;" />
-  <img src="assets/gdg_logo.png" alt="Google Developer Group On Campus • USTO-MB" height="50" style="margin: 0 16px; vertical-align: middle;" />
-</p>
-
 # ARGOS-MED: Edge-Native Maritime Domain Awareness System
 ### 100% Offline SAR Dark Vessel Detection & Tactical SLM Reasoning for Euro-Med Corridors
 **Forum Méditerranéen de l'IA (FMIA) — Palais du Pharo, Marseille | November 5, 2026**
