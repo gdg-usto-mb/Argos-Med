@@ -11,7 +11,7 @@
 
 [![Organization](https://img.shields.io/badge/Organization-GDG%20on%20Campus%20USTO--MB-blue.svg)](https://github.com/gdg-usto-mb)
 [![Institution](https://img.shields.io/badge/University-USTO--MB%20Oran-0055aa.svg)](https://www.univ-usto.dz)
-[![Event](https://img.shields.io/badge/Event-FMIA%20Palais%20du%20Pharo-red.svg)](https://fmia.eu)
+[![Event](https://img.shields.io/badge/Event-FMIA%20Palais%20du%20Pharo-red.svg)](https://github.com/gdg-usto-mb/Argos-Med)
 [![Sovereignty](https://img.shields.io/badge/Architecture-100%25%20Offline%20%2F%20Air--Gapped-green.svg)]()
 [![Inference](https://img.shields.io/badge/Latency-Sub--30ms%20CPU-purple.svg)]()
 [![Compliance](https://img.shields.io/badge/EU%20AI%20Act-High--Risk%20Compliant-black.svg)]()
@@ -32,38 +32,38 @@
 
 ## Table of Contents
 
-- [1. Project Vision & Executive Summary](#1-project-vision--executive-summary)
-  - [The Operational Problem: Dark Vessels & Marine Sanctuaries](#the-operational-problem-dark-vessels--marine-sanctuaries)
-  - [Target Corridors: Marseille & Oran](#target-corridors-marseille--oran)
-- [2. System Architecture & High-Level Dataflow](#2-system-architecture--high-level-dataflow)
+- [1. Project Vision & Executive Summary](#1-project-vision-executive-summary)
+  - [The Operational Problem: Dark Vessels & Marine Sanctuaries](#the-operational-problem-dark-vessels-marine-sanctuaries)
+  - [Target Corridors: Marseille & Oran](#target-corridors-marseille-oran)
+- [2. System Architecture & High-Level Dataflow](#2-system-architecture-high-level-dataflow)
   - [Pipeline Flowchart](#pipeline-flowchart)
   - [Data Pipeline Stages](#data-pipeline-stages)
 - [3. Core Technical Constraints](#3-core-technical-constraints)
-  - [100% Offline / Zero-Cloud Sovereignty](#100-offline--zero-cloud-sovereignty)
+  - [100% Offline / Zero-Cloud Sovereignty](#100-offline-zero-cloud-sovereignty)
   - [Sub-30ms CPU Inference Budget](#sub-30ms-cpu-inference-budget)
   - [Edge Reasoning via Quantized SLM](#edge-reasoning-via-quantized-slm)
-  - [EU AI Act High-Risk Compliance & Frugal AI](#eu-ai-act-high-risk-compliance--frugal-ai)
+  - [EU AI Act High-Risk Compliance & Frugal AI](#eu-ai-act-high-risk-compliance-frugal-ai)
 - [4. Deep-Dive: Tactical Edge Reasoning with LLaMA 3.2 1B](#4-deep-dive-tactical-edge-reasoning-with-llama-32-1b)
   - [Why Small Language Models (SLMs) Transform Maritime C2](#why-small-language-models-slms-transform-maritime-c2)
   - [Structured STANAG 1059 SITREP Synthesis](#structured-stanag-1059-sitrep-synthesis)
-- [5. Prerequisites & Learning Curriculum (with Curated Video Guides)](#5-prerequisites--learning-curriculum-with-curated-video-guides)
+- [5. Prerequisites & Learning Curriculum (with Curated Video Guides)](#5-prerequisites-learning-curriculum-with-curated-video-guides)
   - [Pillar 1: Synthetic Aperture Radar (SAR) Fundamentals](#pillar-1-synthetic-aperture-radar-sar-fundamentals)
-  - [Pillar 2: Object Detection & ONNX Runtime CPU Inference](#pillar-2-object-detection--onnx-runtime-cpu-inference)
-  - [Pillar 3: Geospatial Engineering & Rasterio Coordinates](#pillar-3-geospatial-engineering--rasterio-coordinates)
-  - [Pillar 4: Spatial Indexing & cKDTree Nearest-Neighbor Search](#pillar-4-spatial-indexing--ckdtree-nearest-neighbor-search)
-  - [Pillar 5: Local Offline SLMs & Quantization (Ollama / llama.cpp)](#pillar-5-local-offline-slms--quantization-ollama--llamacpp)
-  - [Pillar 6: Tactical Dark-Mode Interfaces & Leaflet.js Mapping](#pillar-6-tactical-dark-mode-interfaces--leafletjs-mapping)
+  - [Pillar 2: Object Detection & ONNX Runtime CPU Inference](#pillar-2-object-detection-onnx-runtime-cpu-inference)
+  - [Pillar 3: Geospatial Engineering & Rasterio Coordinates](#pillar-3-geospatial-engineering-rasterio-coordinates)
+  - [Pillar 4: Spatial Indexing & cKDTree Nearest-Neighbor Search](#pillar-4-spatial-indexing-ckdtree-nearest-neighbor-search)
+  - [Pillar 5: Local Offline SLMs & Quantization (Ollama / llama.cpp)](#pillar-5-local-offline-slms-quantization-ollama-llamacpp)
+  - [Pillar 6: Tactical Dark-Mode Interfaces & Leaflet.js Mapping](#pillar-6-tactical-dark-mode-interfaces-leafletjs-mapping)
 - [6. Repository Directory Structure](#6-repository-directory-structure)
-- [7. Team Implementation Roadmap & Workstreams](#7-team-implementation-roadmap--workstreams)
-  - [Workstream 1: SAR Perception & ONNX Inference (engine/detector.py)](#workstream-1-sar-perception--onnx-inference-enginedetectorpy)
+- [7. Team Implementation Roadmap & Workstreams](#7-team-implementation-roadmap-workstreams)
+  - [Workstream 1: SAR Perception & ONNX Inference (engine/detector.py)](#workstream-1-sar-perception-onnx-inference-enginedetectorpy)
   - [Workstream 2: Geospatial Geoprocessing (engine/geoprocessor.py)](#workstream-2-geospatial-geoprocessing-enginegeoprocessorpy)
-  - [Workstream 3: Spatial Correlation & MPA Rules (engine/matcher.py)](#workstream-3-spatial-correlation--mpa-rules-enginematcherpy)
+  - [Workstream 3: Spatial Correlation & MPA Rules (engine/matcher.py)](#workstream-3-spatial-correlation-mpa-rules-enginematcherpy)
   - [Workstream 4: Tactical SLM SITREP Generator (engine/reporter.py)](#workstream-4-tactical-slm-sitrep-generator-enginereporterpy)
-  - [Workstream 5: Local Backend & Telemetry API (api/main.py)](#workstream-5-local-backend--telemetry-api-apimainpy)
+  - [Workstream 5: Local Backend & Telemetry API (api/main.py)](#workstream-5-local-backend-telemetry-api-apimainpy)
   - [Workstream 6: Tactical Dark-Mode C2 Dashboard (ui/index.html)](#workstream-6-tactical-dark-mode-c2-dashboard-uiindexhtml)
-- [8. Data Sources & Preparation Guide](#8-data-sources--preparation-guide)
+- [8. Data Sources & Preparation Guide](#8-data-sources-preparation-guide)
 - [9. Contribution Conventions for GDG Developers](#9-contribution-conventions-for-gdg-developers)
-- [10. Project Leadership & Contributors](#10-project-leadership--contributors)
+- [10. Project Leadership & Contributors](#10-project-leadership-contributors)
 
 ---
 
@@ -222,10 +222,10 @@ Synthetic Aperture Radar operates actively in the microwave spectrum, penetratin
   - **Polarizations (VV vs. VH)**: VV (Vertical transmit, Vertical receive) is sensitive to surface capillary waves and ocean wind roughness, useful for oil slick detection and sea state estimation. VH (Vertical transmit, Horizontal receive) cross-polarization depolarizes upon hitting complex 3D metallic vessel geometries while suppressing sea surface clutter, offering a significantly higher Signal-to-Clutter Ratio (SCR) for dark vessel identification.
   - **Ground Range Detected (GRD) Products**: Ingests Level-1 GRD products in Interferometric Wide (IW) swath mode with approximately 10 m x 10 m pixel ground resolution.
 - **Recommended Video Guides**:
-  - [NASA ARSET: Fundamentals of Synthetic Aperture Radar (SAR)](https://www.youtube.com/watch?v=k5jGgDjg4fU) ([Search Guide](https://www.youtube.com/results?search_query=NASA+ARSET+Fundamentals+of+Synthetic+Aperture+Radar)) &mdash; Comprehensive introduction to SAR geometry, backscatter, and polarimetry.
-  - [European Space Agency (ESA): How Radar Satellite Imaging Works](https://www.youtube.com/watch?v=eE7T_cO_F0U) ([Search Guide](https://www.youtube.com/results?search_query=European+Space+Agency+How+Radar+Satellite+Imaging+Works)) &mdash; Visual explanation of radar pulse transmission and synthetic aperture synthesis.
-  - [ESA Earth Observation: Sentinel-1 Mission Overview](https://www.youtube.com/watch?v=Xn7xK_c9R4M) ([Search Guide](https://www.youtube.com/results?search_query=ESA+Sentinel-1+Mission+Overview)) &mdash; Detailed overview of Sentinel-1 operational modes (IW, EW, SM).
-  - [ESA: Sentinel-1 Tracking Maritime Traffic & Silent Vessels](https://www.youtube.com/watch?v=845Uu6025_4) &mdash; Official European Space Agency briefing demonstrating satellite radar detection of dark vessels evading AIS transponders.
+  - [NASA ARSET: Fundamentals of Synthetic Aperture Radar (SAR)](https://www.youtube.com/results?search_query=NASA+ARSET+Fundamentals+of+Synthetic+Aperture+Radar) &mdash; Comprehensive NASA introduction to SAR geometry, backscatter, and polarimetry.
+  - [European Space Agency (ESA): How Radar Satellite Imaging Works](https://www.youtube.com/results?search_query=European+Space+Agency+How+Radar+Satellite+Imaging+Works) &mdash; Visual explanation of radar pulse transmission and synthetic aperture synthesis.
+  - [ESA Earth Observation: Sentinel-1 Mission Overview](https://www.youtube.com/results?search_query=ESA+Sentinel-1+Mission+Overview) &mdash; Detailed overview of Sentinel-1 operational modes (IW, EW, SM).
+  - [ESA: Sentinel-1 Tracking Maritime Traffic & Silent Vessels](https://www.youtube.com/results?search_query=Sentinel-1+tracking+maritime+traffic+ESA) &mdash; Official European Space Agency briefing demonstrating satellite radar detection of dark vessels evading AIS transponders.
 
 ### Pillar 2: Object Detection & ONNX Runtime CPU Inference
 
@@ -256,7 +256,7 @@ Mapping pixel indices (row, col) from satellite matrices into global GPS coordin
 - **Recommended Video Guides**:
   - [Rasterio in Python: Reading and Georeferencing Satellite GeoTIFFs](https://www.youtube.com/results?search_query=rasterio+python+tutorial+geotiff) &mdash; Practical guide to affine transforms and spatial metadata handling.
   - [GIS Foundations: Coordinate Reference Systems (CRS) Explained](https://www.youtube.com/results?search_query=coordinate+reference-systems+explained+epsg) &mdash; Essential cartographic theory: Datums, Ellipsoids, and Projections.
-  - [freeCodeCamp: Geospatial Python with GeoPandas and Rasterio](https://www.youtube.com/watch?v=Pj5A4k6_2i0) &mdash; Complete 2-hour crash course on reading satellite rasters, manipulating affine matrices, and handling GIS layers in Python.
+  - [freeCodeCamp: Geospatial Python with GeoPandas and Rasterio](https://www.youtube.com/results?search_query=freeCodeCamp+Geospatial+Python+with+GeoPandas+and+Rasterio) &mdash; Complete 2-hour crash course on reading satellite rasters, manipulating affine matrices, and handling GIS layers in Python.
 
 ### Pillar 4: Spatial Indexing & cKDTree Nearest-Neighbor Search
 
@@ -302,7 +302,7 @@ Building command and control interfaces for night-time bridge environments requi
 - **Recommended Video Guides**:
   - [Leaflet.js Full Crash Course: Interactive Maps & GeoJSON](https://www.youtube.com/results?search_query=leaflet+js+tutorial+geojson) &mdash; Complete guide to building web maps with custom vector styling.
   - [Building Real-Time Command & Control (C2) Dashboards](https://www.youtube.com/results?search_query=command+and+control+dashboard+ui+design) &mdash; Tactical HUD design principles for military and maritime operations.
-  - [freeCodeCamp: Web Mapping with Leaflet & GeoJSON](https://www.youtube.com/watch?v=F3G164o3L2o) &mdash; Full video tutorial on building interactive map applications and loading GeoJSON data layers.
+  - [freeCodeCamp: Web Mapping with Leaflet & GeoJSON](https://www.youtube.com/results?search_query=freeCodeCamp+Web+Mapping+with+Leaflet+GeoJSON) &mdash; Full video tutorial on building interactive map applications and loading GeoJSON data layers.
 
 ---
 
@@ -319,10 +319,15 @@ Argos-Med/
 ├── data/
 │   ├── ais/                       # Offline AIS transponder logs (CSV / NMEA)
 │   │   ├── marseille_ais.csv      # Sample logs for Marseille sector
-│   │   └── oran_ais.csv           # Sample logs for Oran sector
+│   │   ├── oran_ais.csv           # Sample logs for Oran sector
+│   │   └── README.md              # AIS schema specifications & correlator guide
 │   ├── mpa/
 │   │   └── med_mpas.geojson       # Marine Protected Area boundaries (Calanques & Habibas)
 │   ├── sar/                       # Sentinel-1 SAR GeoTIFF acquisitions (Level-1 GRD)
+│   │   ├── marseille_s1_synthetic.tif # Georeferenced synthetic SAR raster (Marseille)
+│   │   ├── oran_s1_synthetic.tif  # Georeferenced synthetic SAR raster (Oran)
+│   │   └── README.md              # Sentinel-1 specifications & CDSE sourcing guide
+│   ├── sample_detections.geojson  # Pre-computed correlated telemetry (verified vs dark targets)
 │   └── scenarios.json             # Pre-configured scenario metadata
 ├── engine/                        # Core algorithmic engine package
 │   ├── detector.py                # [TEAM WORKSTREAM 1] ONNX SAR ship detection
@@ -408,6 +413,11 @@ To prepare for the FMIA demonstration on November 5, development is divided into
 3. **AIS Data Feeds**:
    - Use public offline sample datasets (MarineCadastre, EMODnet Human Activities, or local VHF AIS antenna logs).
    - Sample CSV templates are provided under `data/ais/`.
+4. **Included Pre-Packaged Demo Datasets (`data/`)**:
+   - Georeferenced synthetic Sentinel-1 SAR GeoTIFFs: `data/sar/marseille_s1_synthetic.tif` and `data/sar/oran_s1_synthetic.tif`.
+   - Coastal AIS transponder CSV logs: `data/ais/marseille_ais.csv` and `data/ais/oran_ais.csv`.
+   - Protected marine boundary polygons: `data/mpa/med_mpas.geojson`.
+   - Correlated tactical telemetry output: `data/sample_detections.geojson`.
 
 ---
 

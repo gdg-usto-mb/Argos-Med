@@ -1,0 +1,104 @@
+{
+  "type": "FeatureCollection",
+  "name": "ArgosMed_Correlated_Telemetry",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "target_id": "ARGOS-TRK-001",
+        "status": "VERIFIED_VESSEL",
+        "vessel_name": "CMA CGM ANTOINE",
+        "ship_type": "Container Ship",
+        "radar_confidence": 0.962,
+        "estimated_length_m": 366.0,
+        "estimated_beam_m": 51.0,
+        "ais_mmsi": "227001230",
+        "ais_match_delta_m": 38.2,
+        "mpa_violation": false,
+        "mpa_name": "None",
+        "threat_level": "CHARLIE-ROUTINE"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.23,
+          43.235
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "target_id": "ARGOS-TRK-002",
+        "status": "VERIFIED_VESSEL",
+        "vessel_name": "JEAN CHARCOT",
+        "ship_type": "Oceanographic Research",
+        "radar_confidence": 0.915,
+        "estimated_length_m": 75.0,
+        "estimated_beam_m": 14.0,
+        "ais_mmsi": "228394000",
+        "ais_match_delta_m": 45.1,
+        "mpa_violation": false,
+        "mpa_name": "None",
+        "threat_level": "CHARLIE-ROUTINE"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.34,
+          43.275
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "target_id": "ARGOS-DRK-001",
+        "status": "DARK_VESSEL",
+        "vessel_name": "UNKNOWN // NO AIS BEACON",
+        "ship_type": "Suspected Illegal Trawler / Smuggling",
+        "radar_confidence": 0.948,
+        "estimated_length_m": 64.0,
+        "estimated_beam_m": 16.0,
+        "ais_mmsi": null,
+        "ais_match_delta_m": null,
+        "mpa_violation": true,
+        "mpa_name": "Parc National des Calanques",
+        "threat_level": "ALPHA-CRITICAL",
+        "sitrep_generated": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.42,
+          43.185
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "target_id": "ARGOS-DRK-002",
+        "status": "DARK_VESSEL",
+        "vessel_name": "UNKNOWN // NO AIS BEACON",
+        "ship_type": "Suspected Unflagged Bunkering Barge",
+        "radar_confidence": 0.892,
+        "estimated_length_m": 110.0,
+        "estimated_beam_m": 22.0,
+        "ais_mmsi": null,
+        "ais_match_delta_m": null,
+        "mpa_violation": false,
+        "mpa_name": "None",
+        "threat_level": "BRAVO-ELEVATED",
+        "sitrep_generated": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.22,
+          43.15
+        ]
+      }
+    }
+  ]
+}
