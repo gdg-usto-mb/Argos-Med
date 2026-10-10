@@ -1,7 +1,8 @@
 <div align="center">
 
 <p align="center">
-  <img src="assets/logo.png" alt="Argos-Med Logo" width="160" style="border-radius: 12px; margin: 8px;" />
+  <img src="assets/logo.png" alt="Argos-Med Logo" width="150" style="border-radius: 12px; margin: 8px; vertical-align: middle;" />
+  <img src="assets/gdg_certified.png" alt="Google Developer Groups On Campus • USTO-MB Certified" width="150" style="margin: 8px; vertical-align: middle;" />
 </p>
 
 # ARGOS-MED: Edge-Native Maritime Domain Awareness System
