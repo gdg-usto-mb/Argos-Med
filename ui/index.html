@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Argos-Med // Tactical Maritime Surveillance System</title>
+  <style>
+    :root {
+      --bg-dark: #070a12;
+      --panel-bg: rgba(13, 20, 36, 0.92);
+      --panel-border: #1e2c4d;
+      --text-main: #e2e8f0;
+      --text-muted: #8899b5;
+      --accent-blue: #2563eb;
+      --radar-cyan: #00d2ff;
+      --dark-vessel-red: #ff2a55;
+      --dark-vessel-glow: rgba(255, 42, 85, 0.4);
+      --verified-green: #00f076;
+      --verified-glow: rgba(0, 240, 118, 0.35);
+      --mpa-amber: #ffd400;
+      --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- TOP TACTICAL HEADER --- */
+    header {
+      background: #090e1a;
+      border-bottom: 1px solid var(--panel-border);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 100;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 6px;
+      border: 1px solid #2b3d68;
+      object-fit: cover;
+    }
+
+    .brand-title h1 {
+      font-size: 16px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-title span {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .fmia-badge {
+      background: rgba(37, 99, 235, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(37, 99, 235, 0.35);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.5px;
+    }
+
+    .controls-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    select, button {
+      background: #101a2e;
+      color: var(--text-main);
+      border: 1px solid var(--panel-border);
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    select:focus, button:focus {
+      outline: none;
+      border-color: var(--radar-cyan);
+    }
+
+    button.primary-btn {
+      background: #1d4ed8;
+      border-color: #2563eb;
+      color: #fff;
+      font-weight: 600;
+    }
+
+    button.primary-btn:hover {
+      background: #2563eb;
+    }
+
+    /* --- MAIN WORKSPACE --- */
+    .workspace {
+      flex: 1;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Tactical Map Viewport */
+    .map-container {
+      flex: 1;
+      position: relative;
+      background: #060911;
+      overflow: hidden;
+    }
+
+    #tacticalCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Radar Grid Overlay */
+    .radar-sweep-line {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 45vmax;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(0, 210, 255, 0.7), transparent);
+      transform-origin: left center;
+      pointer-events: none;
+      animation: sweep 8s linear infinite;
+      opacity: 0.25;
+    }
+
+    @keyframes sweep {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* --- HARDWARE TELEMETRY HUD (TOP-RIGHT) --- */
+    .hud-panel {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      padding: 12px 16px;
+      width: 320px;
+      backdrop-filter: blur(8px);
+      z-index: 50;
+      font-family: var(--font-mono);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .hud-title {
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--panel-border);
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .hud-status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--verified-green);
+      box-shadow: 0 0 6px var(--verified-green);
+    }
+
+    .hud-metric-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 11px;
+    }
+
+    .hud-metric-label {
+      color: var(--text-muted);
+    }
+
+    .hud-metric-val {
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .hud-metric-val.latency {
+      color: var(--verified-green);
+    }
+
+    .airgap-pill {
+      background: rgba(0, 240, 118, 0.12);
+      color: var(--verified-green);
+      border: 1px solid rgba(0, 240, 118, 0.3);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 9px;
+      letter-spacing: 0.5px;
+    }
+
+    /* --- TARGET INSPECTOR SIDEBAR (LEFT) --- */
+    .inspector-panel {
+      position: absolute;
+      bottom: 14px;
+      left: 14px;
+      width: 380px;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 6px;
+      padding: 14px;
+      backdrop-filter: blur(8px);
+      z-index: 50;
+      font-family: var(--font-mono);
+      max-height: 480px;
+      overflow-y: auto;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .panel-header {
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--panel-border);
+      padding-bottom: 6px;
+    }
+
+    .target-card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 4px;
+      padding: 10px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .target-card:hover, .target-card.active {
+      border-color: var(--radar-cyan);
+      background: #131e36;
+    }
+
+    .target-card.dark-vessel {
+      border-left: 3px solid var(--dark-vessel-red);
+    }
+
+    .target-card.verified-vessel {
+      border-left: 3px solid var(--verified-green);
+    }
+
+    .target-card-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 4px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .target-card-meta {
+      font-size: 10px;
+      color: var(--text-muted);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+    }
+
+    .target-card-badge {
+      font-size: 9px;
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+
+    .badge-dark {
+      background: rgba(255, 42, 85, 0.2);
+      color: var(--dark-vessel-red);
+      border: 1px solid var(--dark-vessel-red);
+    }
+
+    .badge-verified {
+      background: rgba(0, 240, 118, 0.15);
+      color: var(--verified-green);
+      border: 1px solid var(--verified-green);
+    }
+
+    /* --- SITREP MODAL --- */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(3, 7, 18, 0.85);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .sitrep-modal {
+      width: 720px;
+      max-width: 90vw;
+      max-height: 85vh;
+      background: #090e1a;
+      border: 1px solid #2b3d68;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+      font-family: var(--font-mono);
+    }
+
+    .sitrep-modal-header {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--panel-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0f172a;
+    }
+
+    .sitrep-modal-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #ffffff;
+    }
+
+    .sitrep-modal-body {
+      padding: 16px;
+      overflow-y: auto;
+      font-size: 11px;
+      line-height: 1.6;
+      color: #94a3b8;
+      background: #070a13;
+      white-space: pre-wrap;
+      user-select: text;
+    }
+
+    .sitrep-modal-footer {
+      padding: 12px 18px;
+      border-top: 1px solid var(--panel-border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: #0f172a;
+    }
+
+    /* Pulse animation for dark vessel markers */
+    @keyframes pulse-red {
+      0% { transform: scale(0.9); opacity: 0.9; }
+      50% { transform: scale(1.3); opacity: 0.3; }
+      100% { transform: scale(0.9); opacity: 0.9; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand-section">
+      <img src="/assets/logo.png" alt="Argos-Med Logo" class="brand-logo" onerror="this.style.display='none'">
+      <div class="brand-title">
+        <h1>Argos-Med <span class="fmia-badge">FMIA Palais du Pharo</span></h1>
+        <span>Edge-Native Copernicus SAR & Dark Vessel Surveillance</span>
+      </div>
+    </div>
+    <div class="controls-section">
+      <select id="scenarioSelector">
+        <option value="marseille_calanques">Marseille Corridor // Calanques Sanctuary</option>
+        <option value="oran_arzew">Oran Corridor // Habibas Marine Reserve</option>
+      </select>
+      <button class="primary-btn" id="runSweepBtn">Execute SAR Sweep</button>
+      <span class="airgap-pill">AIR-GAPPED 100%</span>
+    </div>
+  </header>
+
+  <!-- WORKSPACE -->
+  <div class="workspace">
+    <div class="map-container" id="mapWrapper">
+      <canvas id="tacticalCanvas"></canvas>
+      <div class="radar-sweep-line"></div>
+    </div>
+
+    <!-- HARDWARE HUD -->
+    <div class="hud-panel">
+      <div class="hud-title">
+        <span>Hardware Telemetry HUD</span>
+        <span class="hud-status-dot"></span>
+      </div>
+      <div class="hud-metric-row">
+        <span class="hud-metric-label">Inference Engine</span>
+        <span class="hud-metric-val">ONNX Runtime (CPU)</span>
+      </div>
+      <div class="hud-metric-row">
+        <span class="hud-metric-label">Model Quantization</span>
+        <span class="hud-metric-val">YOLOv8n INT8 / LLaMA 1B</span>
+      </div>
+      <div class="hud-metric-row">
+        <span class="hud-metric-label">Radar Inference Latency</span>
+        <span class="hud-metric-val latency" id="hudLatency">18.4 ms (< 30ms Budget)</span>
+      </div>
+      <div class="hud-metric-row">
+        <span class="hud-metric-label">CPU Utilization</span>
+        <span class="hud-metric-val" id="hudCpu">14.2%</span>
+      </div>
+      <div class="hud-metric-row">
+        <span class="hud-metric-label">RAM Consumption</span>
+        <span class="hud-metric-val" id="hudRam">156 MB / 512 MB Budget</span>
+      </div>
+      <div class="hud-metric-row">
+        <span class="hud-metric-label">Air-Gap Data Integrity</span>
+        <span class="hud-metric-val" style="color: var(--verified-green)">Zero Cloud Leakage</span>
+      </div>
+    </div>
+
+    <!-- TARGET INSPECTOR -->
+    <div class="inspector-panel">
+      <div class="panel-header">
+        <span>Detected Maritime Tracks</span>
+        <span id="targetCountBadge" style="color: var(--radar-cyan)">4 Targets</span>
+      </div>
+      <div id="targetListContainer">
+        <!-- Dynamic target cards inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- SITREP MODAL -->
+  <div class="modal-overlay" id="sitrepModalOverlay">
+    <div class="sitrep-modal">
+      <div class="sitrep-modal-header">
+        <span class="sitrep-modal-title" id="sitrepTitle">TACTICAL NAVAL SITREP // ARGOS-MED</span>
+        <button id="closeModalBtn" style="padding: 2px 8px;">✕</button>
+      </div>
+      <div class="sitrep-modal-body" id="sitrepBody">Generating tactical intelligence...</div>
+      <div class="sitrep-modal-footer">
+        <button id="copySitrepBtn">Copy to Clipboard</button>
+        <button class="primary-btn" id="dismissModalBtn">Acknowledge</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- ARGOS-MED CLIENT ENGINE ---
+    let currentScenario = 'marseille_calanques';
+    let telemetryData = null;
+    let selectedTargetId = null;
+
+    const canvas = document.getElementById('tacticalCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Resize canvas on layout changes
+    function resizeCanvas() {
+      const container = document.getElementById('mapWrapper');
+      canvas.width = container.clientWidth;
+      canvas.height = container.clientHeight;
+      drawTacticalMap();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    // Initial boot
+    window.addEventListener('DOMContentLoaded', () => {
+      resizeCanvas();
+      fetchPipelineData();
+      startTelemetryPolling();
+    });
+
+    document.getElementById('scenarioSelector').addEventListener('change', (e) => {
+      currentScenario = e.target.value;
+      fetchPipelineData();
+    });
+
+    document.getElementById('runSweepBtn').addEventListener('click', () => {
+      fetchPipelineData();
+    });
+
+    async function fetchPipelineData() {
+      try {
+        const res = await fetch('/pipeline/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scenario_id: currentScenario, confidence_threshold: 0.35 })
+        });
+        telemetryData = await res.json();
+        updateHUD(telemetryData.telemetry);
+        renderTargetList(telemetryData.targets);
+        drawTacticalMap();
+      } catch (err) {
+        console.error("Pipeline fetch error:", err);
+      }
+    }
+
+    async function startTelemetryPolling() {
+      setInterval(async () => {
+        try {
+          const res = await fetch('/health');
+          const data = await res.json();
+          if (data && data.telemetry) {
+            updateHUD(data.telemetry);
+          }
+        } catch (_) {}
+      }, 4000);
+    }
+
+    function updateHUD(telemetry) {
+      if (!telemetry) return;
+      document.getElementById('hudLatency').textContent = `${telemetry.last_inference_latency_ms} ms (Target < 30ms)`;
+      document.getElementById('hudCpu').textContent = `${telemetry.cpu_utilization_pct}%`;
+      document.getElementById('hudRam').textContent = `${telemetry.ram_used_mb} MB`;
+    }
+
+    function renderTargetList(targets) {
+      const container = document.getElementById('targetListContainer');
+      container.innerHTML = '';
+      if (!targets || targets.length === 0) {
+        container.innerHTML = '<div style="color: #64748b; font-size: 11px; padding: 10px;">Zero targets in sweep sector.</div>';
+        return;
+      }
+
+      document.getElementById('targetCountBadge').textContent = `${targets.length} Tracks`;
+
+      targets.forEach(t => {
+        const isDark = t.classification === 'DARK_VESSEL';
+        const card = document.createElement('div');
+        card.className = `target-card ${isDark ? 'dark-vessel' : 'verified-vessel'} ${t.target_id === selectedTargetId ? 'active' : ''}`;
+        card.onclick = () => selectTarget(t.target_id);
+
+        card.innerHTML = `
+          <div class="target-card-header">
+            <span style="color: ${isDark ? 'var(--dark-vessel-red)' : 'var(--verified-green)'}">${t.target_id}</span>
+            <span class="target-card-badge ${isDark ? 'badge-dark' : 'badge-verified'}">
+              ${isDark ? 'DARK VESSEL' : 'AIS VERIFIED'}
+            </span>
+          </div>
+          <div class="target-card-meta">
+            <span>Lat: ${t.latitude.toFixed(4)}° N</span>
+            <span>Lon: ${t.longitude.toFixed(4)}° E</span>
+            <span>Est. Length: ${t.estimated_length_m}m</span>
+            <span>Conf: ${(t.confidence * 100).toFixed(1)}%</span>
+          </div>
+          ${t.is_inside_mpa ? '<div style="color: var(--mpa-amber); font-size: 9px; margin-top: 4px;">⚠️ MPA SANCTUARY INFRINGEMENT</div>' : ''}
+          <div style="margin-top: 6px; display: flex; justify-content: flex-end;">
+            <button onclick="event.stopPropagation(); generateSITREP('${t.target_id}')" style="font-size: 10px; padding: 3px 8px; background: #1e293b;">
+              Generate SITREP
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function selectTarget(targetId) {
+      selectedTargetId = targetId;
+      drawTacticalMap();
+      const cards = document.querySelectorAll('.target-card');
+      cards.forEach(c => c.classList.remove('active'));
+    }
+
+    // --- TACTICAL CARTOGRAPHY RENDERER ---
+    function drawTacticalMap() {
+      if (!canvas.width || !canvas.height) return;
+
+      const w = canvas.width;
+      const h = canvas.height;
+
+      // 1. Clear & Bathymetry Base
+      ctx.fillStyle = '#060a14';
+      ctx.fillRect(0, 0, w, h);
+
+      // 2. Coordinate Grid Lines
+      ctx.strokeStyle = 'rgba(30, 48, 80, 0.4)';
+      ctx.lineWidth = 1;
+      const step = 80;
+      for (let x = 0; x < w; x += step) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+      for (let y = 0; y < h; y += step) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // Compass Rose / Grid Coordinates
+      ctx.fillStyle = '#334155';
+      ctx.font = '10px monospace';
+      ctx.fillText('SECTOR: GOLFE DU LION // MARSEILLE APPROACH', 20, h - 20);
+      ctx.fillText('DATUM: WGS84 (EPSG:4326)', 20, h - 35);
+
+      // 3. Marine Protected Area Boundary
+      ctx.strokeStyle = 'rgba(255, 212, 0, 0.65)';
+      ctx.fillStyle = 'rgba(255, 212, 0, 0.05)';
+      ctx.setLineDash([6, 4]);
+      ctx.lineWidth = 1.5;
+
+      // Calanques / Habibas Polygon representation
+      const mpaX = w * 0.62;
+      const mpaY = h * 0.48;
+      const mpaR = Math.min(w, h) * 0.18;
+
+      ctx.beginPath();
+      ctx.arc(mpaX, mpaY, mpaR, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = 'rgba(255, 212, 0, 0.8)';
+      ctx.fillText('PARC NATIONAL DES CALANQUES (MPA SANCTUARY)', mpaX - 110, mpaY - mpaR - 8);
+
+      // 4. Draw Targets
+      if (telemetryData && telemetryData.targets) {
+        const bounds = telemetryData.scenario.bounds; // [min_lon, min_lat, max_lon, max_lat]
+        const minLon = bounds[0], minLat = bounds[1], maxLon = bounds[2], maxLat = bounds[3];
+
+        telemetryData.targets.forEach((t, idx) => {
+          // Normalize lat/lon to canvas x, y
+          const normX = (t.longitude - minLon) / (maxLon - minLon);
+          const normY = 1.0 - (t.latitude - minLat) / (maxLat - minLat);
+
+          const px = Math.max(80, Math.min(w - 80, normX * w));
+          const py = Math.max(80, Math.min(h - 80, normY * h));
+
+          const isDark = t.classification === 'DARK_VESSEL';
+          const isSelected = t.target_id === selectedTargetId;
+
+          if (isDark) {
+            // Pulsing Red Rings for Dark Vessel
+            ctx.strokeStyle = 'rgba(255, 42, 85, 0.4)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(px, py, 22, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.strokeStyle = 'rgba(255, 42, 85, 0.8)';
+            ctx.beginPath();
+            ctx.arc(px, py, 14, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.fillStyle = '#ff2a55';
+            ctx.beginPath();
+            ctx.arc(px, py, 5, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            // Emerald Green for Verified Vessel
+            ctx.strokeStyle = 'rgba(0, 240, 118, 0.5)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(px, py, 12, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.fillStyle = '#00f076';
+            ctx.beginPath();
+            ctx.arc(px, py, 4, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Label
+          ctx.fillStyle = isDark ? '#ff4d6d' : '#4ade80';
+          ctx.font = 'bold 11px monospace';
+          ctx.fillText(t.target_id, px + 12, py - 6);
+
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = '9px monospace';
+          ctx.fillText(`${t.estimated_length_m}m | ${(t.confidence * 100).toFixed(0)}%`, px + 12, py + 8);
+        });
+      }
+    }
+
+    // --- SITREP ACTION ---
+    async function generateSITREP(targetId) {
+      const modal = document.getElementById('sitrepModalOverlay');
+      const body = document.getElementById('sitrepBody');
+      const title = document.getElementById('sitrepTitle');
+
+      title.textContent = `TACTICAL NAVAL SITREP // TARGET: ${targetId}`;
+      body.textContent = 'Generating tactical incident analysis via offline edge reasoning...';
+      modal.classList.add('open');
+
+      try {
+        const res = await fetch('/sitrep/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ target_id: targetId, scenario_id: currentScenario })
+        });
+        const sitrep = await res.json();
+        body.textContent = sitrep.sitrep_markdown || JSON.stringify(sitrep, null, 2);
+      } catch (err) {
+        body.textContent = `Generation error: ${err.message}`;
+      }
+    }
+
+    document.getElementById('closeModalBtn').onclick = () => document.getElementById('sitrepModalOverlay').classList.remove('open');
+    document.getElementById('dismissModalBtn').onclick = () => document.getElementById('sitrepModalOverlay').classList.remove('open');
+    document.getElementById('copySitrepBtn').onclick = () => {
+      const text = document.getElementById('sitrepBody').textContent;
+      navigator.clipboard.writeText(text);
+      alert('SITREP copied to clipboard.');
+    };
+  </script>
+</body>
+</html>

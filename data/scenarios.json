@@ -1,0 +1,28 @@
+{
+  "scenarios": [
+    {
+      "id": "marseille_calanques",
+      "name": "Marseille Corridor - Golfe du Lion & Calanques Sanctuary",
+      "description": "Surveillance sector covering Grand Port Maritime de Marseille (GPMM), Frioul archipelago, and Parc National des Calanques. Detects illicit unflagged bunker barges and dark speedcraft.",
+      "bounds": [5.100, 43.100, 5.550, 43.350],
+      "center": [43.250, 5.320],
+      "zoom": 11,
+      "ais_file": "data/ais/marseille_ais.csv",
+      "sar_file": "data/sar/marseille_s1_synthetic.tif",
+      "nominal_targets": 4,
+      "expected_dark_vessels": 2
+    },
+    {
+      "id": "oran_arzew",
+      "name": "Oran Corridor - Baie d'Oran & Habibas Marine Reserve",
+      "description": "Surveillance corridor spanning Port d'Oran, Arzew LNG export channel, and the ecologically sensitive Habibas Islands nature reserve.",
+      "bounds": [-1.250, 35.650, -0.200, 35.900],
+      "center": [35.780, -0.650],
+      "zoom": 11,
+      "ais_file": "data/ais/oran_ais.csv",
+      "sar_file": "data/sar/oran_s1_synthetic.tif",
+      "nominal_targets": 3,
+      "expected_dark_vessels": 1
+    }
+  ]
+}
