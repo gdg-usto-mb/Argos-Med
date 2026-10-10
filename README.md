@@ -20,6 +20,12 @@
 
 ---
 
+<div align="center" style="margin: 20px 0;">
+  <img src="assets/timeline.svg" alt="Argos-Med Readiness Timeline Widget" width="100%" />
+</div>
+
+---
+
 ## Table of Contents
 
 - [1. Project Vision & Executive Summary](#1-project-vision--executive-summary)
@@ -43,6 +49,7 @@
   - [Workstream 6: Tactical Dark-Mode C2 Dashboard (ui/index.html)](#workstream-6-tactical-dark-mode-c2-dashboard-uiindexhtml)
 - [6. Data Sources & Preparation Guide](#6-data-sources--preparation-guide)
 - [7. Contribution Conventions for GDG Developers](#7-contribution-conventions-for-gdg-developers)
+- [8. Project Leadership & Contributors](#8-project-leadership--contributors)
 
 ---
 
@@ -145,7 +152,8 @@ This repository provides the modular scaffold for the team. Place code within th
 ```
 Argos-Med/
 ├── assets/
-│   └── logo.png                   # Official Argos-Med FMIA project insignia
+│   ├── logo.png                   # Official Argos-Med FMIA project insignia
+│   └── timeline.svg               # Readiness roadmap & milestone countdown widget
 ├── data/
 │   ├── ais/                       # Offline AIS transponder logs (CSV / NMEA)
 │   │   ├── marseille_ais.csv      # Sample logs for Marseille sector
@@ -164,6 +172,7 @@ Argos-Med/
 ├── ui/                            # Frontend interface package
 │   └── index.html                 # [TEAM WORKSTREAM 6] Tactical Leaflet dark-mode C2 HUD
 ├── models/                        # Model weights directory (ONNX, GGUF)
+├── CONTRIBUTORS.md                # Project leadership and team credits
 ├── requirements.txt               # Base Python dependencies
 └── README.md                      # Project master architecture & technical white paper
 ```
@@ -266,6 +275,31 @@ Before opening a PR for lead review:
 - [ ] Inference latency remains strictly within the sub-30ms CPU budget.
 - [ ] No API keys, credentials, or personal telemetry files are committed.
 - [ ] Works cleanly with the sample data provided in `data/`.
+
+---
+
+## 8. Project Leadership & Contributors
+
+Argos-Med is engineered by the student developer community of **Google Developer Groups (GDG) on Campus USTO-MB** (*Université des Sciences et de la Technologie d'Oran Mohamed-Boudiaf*, Algeria).
+
+### Core Project Contributors
+
+- **Aymen Bennaoum**
+  - **Role**: Core Contributor & Systems Engineer
+  - **Affiliation**: GDG on Campus USTO-MB, Université des Sciences et de la Technologie d'Oran Mohamed-Boudiaf
+  - **Focus Areas**: Maritime AI Architecture, Edge Model Optimization, Spatial Correlator Pipeline
+
+- **Siradj Mounir Lamri** (`@sirgio03`)
+  - **Role**: Technical Architect & GDG Lead
+  - **Affiliation**: GDG on Campus USTO-MB, Université des Sciences et de la Technologie d'Oran Mohamed-Boudiaf
+  - **Focus Areas**: System Design, Geospatial Geoprocessing, Zero-Cloud Edge Infrastructure
+
+- **GDG on Campus USTO-MB Engineering Team**
+  - Computer Vision & SAR Perception Working Group
+  - Geospatial Informatics & Marine Rules Working Group
+  - Edge SLM Reasoning & Tactical UI Working Group
+
+For full details and contribution guidelines, see [CONTRIBUTORS.md](CONTRIBUTORS.md).
 
 ---
 

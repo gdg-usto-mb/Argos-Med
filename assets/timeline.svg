@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 260" width="100%" height="260">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#070c18"/>
+      <stop offset="50%" stop-color="#0c1427"/>
+      <stop offset="100%" stop-color="#090e1c"/>
+    </linearGradient>
+    <linearGradient id="progressGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="25%" stop-color="#00d2ff"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <filter id="glowGreen" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="glowCyan" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Container Box -->
+  <rect x="2" y="2" width="816" height="256" rx="14" fill="url(#bgGradient)" stroke="#1e2c4d" stroke-width="1.5"/>
+
+  <!-- Top Header Section -->
+  <text x="24" y="36" fill="#8899b5" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600" letter-spacing="1.5">ROADMAP &amp; READINESS TIMELINE</text>
+  <text x="24" y="58" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="700">Forum Méditerranéen de l'IA (FMIA) — Palais du Pharo</text>
+
+  <!-- Pill Badge: Countdown -->
+  <rect x="580" y="24" width="216" height="30" rx="6" fill="rgba(37, 99, 235, 0.15)" stroke="#2563eb" stroke-width="1"/>
+  <circle cx="596" cy="39" r="4" fill="#00d2ff"/>
+  <text x="608" y="43" fill="#93c5fd" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace" font-size="11" font-weight="600">TARGET: NOV 5, 2026 (26d)</text>
+
+  <!-- Connecting Timeline Rails -->
+  <line x1="80" y1="126" x2="740" y2="126" stroke="#1e293b" stroke-width="3" stroke-linecap="round"/>
+  <!-- Active Progress (Phase 1 to Phase 2) -->
+  <line x1="80" y1="126" x2="245" y2="126" stroke="url(#progressGrad)" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- NODE 1: Oct 10 (Completed) -->
+  <g transform="translate(80, 126)">
+    <circle cx="0" cy="0" r="14" fill="#10b981" filter="url(#glowGreen)"/>
+    <polyline points="-5,-1 -1,3 5,-4" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="0" y="-22" text-anchor="middle" fill="#10b981" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace" font-size="10" font-weight="700">DONE</text>
+    <text x="0" y="26" text-anchor="middle" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600">Phase 1: Oct 10</text>
+    <text x="0" y="40" text-anchor="middle" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9.5">Architecture &amp; Data</text>
+  </g>
+
+  <!-- NODE 2: Oct 18 (Active Workstream) -->
+  <g transform="translate(245, 126)">
+    <circle cx="0" cy="0" r="16" fill="none" stroke="#00d2ff" stroke-width="2" stroke-dasharray="3,3" opacity="0.6"/>
+    <circle cx="0" cy="0" r="12" fill="#00d2ff" filter="url(#glowCyan)"/>
+    <circle cx="0" cy="0" r="4" fill="#0c1427"/>
+    <text x="0" y="-22" text-anchor="middle" fill="#00d2ff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace" font-size="10" font-weight="700">ACTIVE</text>
+    <text x="0" y="26" text-anchor="middle" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600">Phase 2: Oct 18</text>
+    <text x="0" y="40" text-anchor="middle" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9.5">SAR ONNX Engine</text>
+  </g>
+
+  <!-- NODE 3: Oct 25 (Upcoming) -->
+  <g transform="translate(410, 126)">
+    <circle cx="0" cy="0" r="10" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+    <text x="0" y="-22" text-anchor="middle" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace" font-size="10" font-weight="600">PLANNED</text>
+    <text x="0" y="26" text-anchor="middle" fill="#cbd5e1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600">Phase 3: Oct 25</text>
+    <text x="0" y="40" text-anchor="middle" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9.5">AIS Spatial Matcher</text>
+  </g>
+
+  <!-- NODE 4: Nov 01 (Upcoming) -->
+  <g transform="translate(575, 126)">
+    <circle cx="0" cy="0" r="10" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+    <text x="0" y="-22" text-anchor="middle" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace" font-size="10" font-weight="600">PLANNED</text>
+    <text x="0" y="26" text-anchor="middle" fill="#cbd5e1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="600">Phase 4: Nov 01</text>
+    <text x="0" y="40" text-anchor="middle" fill="#64748b" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9.5">SLM &amp; Tactical UI</text>
+  </g>
+
+  <!-- NODE 5: Nov 05 (Go-Live FMIA) -->
+  <g transform="translate(740, 126)">
+    <circle cx="0" cy="0" r="14" fill="url(#goldGrad)" stroke="#fde047" stroke-width="1.5"/>
+    <polygon points="0,-6 2,-1 7,-1 3,2 5,7 0,4 -5,7 -3,2 -7,-1 -2,-1" fill="#0c1427"/>
+    <text x="0" y="-22" text-anchor="middle" fill="#fbbf24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace" font-size="10" font-weight="700">GO-LIVE</text>
+    <text x="0" y="26" text-anchor="middle" fill="#fbbf24" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11" font-weight="700">Phase 5: Nov 05</text>
+    <text x="0" y="40" text-anchor="middle" fill="#cbd5e1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9.5">Palais du Pharo</text>
+  </g>
+
+  <!-- Bottom Readiness Summary Bar -->
+  <g transform="translate(24, 212)">
+    <rect x="0" y="0" width="772" height="30" rx="6" fill="#0f172a" stroke="#1e293b" stroke-width="1"/>
+    <text x="14" y="19" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace" font-size="11">DEPLOYMENT READINESS: 25%</text>
+    <rect x="220" y="10" width="400" height="10" rx="5" fill="#1e293b"/>
+    <rect x="220" y="10" width="100" height="10" rx="5" fill="url(#progressGrad)"/>
+    <text x="635" y="19" fill="#00d2ff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace" font-size="10" font-weight="600">AIR-GAP VERIFIED</text>
+  </g>
+</svg>
