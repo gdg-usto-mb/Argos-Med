@@ -46,7 +46,7 @@
 - [4. Deep-Dive: Tactical Edge Reasoning with LLaMA 3.2 1B](#4-deep-dive-tactical-edge-reasoning-with-llama-32-1b)
   - [Why Small Language Models (SLMs) Transform Maritime C2](#why-small-language-models-slms-transform-maritime-c2)
   - [Structured STANAG 1059 SITREP Synthesis](#structured-stanag-1059-sitrep-synthesis)
-- [5. Prerequisites & Learning Curriculum (with Verified Video Guides)](#5-prerequisites--learning-curriculum-with-verified-video-guides)
+- [5. Prerequisites & Learning Curriculum (with Curated Video Guides)](#5-prerequisites--learning-curriculum-with-curated-video-guides)
   - [Pillar 1: Synthetic Aperture Radar (SAR) Fundamentals](#pillar-1-synthetic-aperture-radar-sar-fundamentals)
   - [Pillar 2: Object Detection & ONNX Runtime CPU Inference](#pillar-2-object-detection--onnx-runtime-cpu-inference)
   - [Pillar 3: Geospatial Engineering & Rasterio Coordinates](#pillar-3-geospatial-engineering--rasterio-coordinates)
@@ -207,122 +207,102 @@ THREAT ASSESSMENT: ALPHA-CRITICAL
 
 ---
 
-## 5. Prerequisites & Learning Curriculum (with Verified Video Guides)
+## 5. Prerequisites & Learning Curriculum (with Curated Video Guides)
 
-To ensure all team members and student contributors at GDG on Campus USTO-MB can build and understand every layer of Argos-Med, review this structured curriculum divided across the six foundational engineering domains. Each pillar provides intuitive explanations, the underlying mathematics and physics, and verified educational video tutorials.
+To ensure all team members and student contributors can build and understand every layer of Argos-Med, review this structured curriculum divided across the six foundational engineering domains.
 
 ### Pillar 1: Synthetic Aperture Radar (SAR) Fundamentals
 
-Unlike optical satellites (such as Landsat or Sentinel-2) which require solar illumination and cannot penetrate clouds or darkness, Synthetic Aperture Radar (SAR) is an active microwave instrument. Sentinel-1 orbits at an altitude of approximately 693 km, transmitting coherent C-band radar pulses (5.405 GHz, ~5.6 cm wavelength) toward Earth and measuring the backscattered amplitude and phase reflected back to the sensor.
+Synthetic Aperture Radar operates actively in the microwave spectrum, penetrating clouds, darkness, and rain. Metal hulls act as corner reflectors producing intense backscatter peaks against the darker sea clutter background.
 
-- **The Physics of Sea vs. Metal Vessel Reflection**:
+- **Key Concepts**: Active microwave remote sensing, C-Band (5.405 GHz), VV vs VH polarizations, Ground Range Detected (GRD) products, radar cross-section (RCS), speckle filtering.
+- **Deep-Dive Engineering Context**:
   - **Specular Sea Surface Scattering**: Open ocean surfaces typically reflect incoming microwave beams away from the satellite receiver like a mirror. Consequently, calm and moderately rough water appears as dark grey or black pixels on SAR intensity imagery.
   - **Double-Bounce Corner Reflection**: Ships are constructed from steel plates and angular superstructures. When the radar pulse hits the sea surface and then the vertical ship hull (or vice versa), it creates a high-efficiency double-bounce corner reflector. This bounces a massive proportion of radar energy directly back to the satellite, appearing as a brilliant, high-contrast white cluster of pixels.
-- **Polarizations (VV vs. VH)**:
-  - **VV (Vertical transmit, Vertical receive)**: Sensitive to surface capillary waves and ocean wind roughness; useful for oil slick detection and sea state estimation.
-  - **VH (Vertical transmit, Horizontal receive)**: Cross-polarization depolarizes upon hitting complex 3D metallic vessel geometries while suppressing sea surface clutter. For dark vessel identification, the VH channel offers a significantly higher Signal-to-Clutter Ratio (SCR).
-- **Ground Range Detected (GRD) Products**:
-  - We ingest Level-1 GRD products in Interferometric Wide (IW) swath mode, offering a 250 km swath width and approximately 10 m x 10 m pixel ground resolution.
-- **Verified Video Guides & Tutorials**:
+  - **Polarizations (VV vs. VH)**: VV (Vertical transmit, Vertical receive) is sensitive to surface capillary waves and ocean wind roughness, useful for oil slick detection and sea state estimation. VH (Vertical transmit, Horizontal receive) cross-polarization depolarizes upon hitting complex 3D metallic vessel geometries while suppressing sea surface clutter, offering a significantly higher Signal-to-Clutter Ratio (SCR) for dark vessel identification.
+  - **Ground Range Detected (GRD) Products**: Ingests Level-1 GRD products in Interferometric Wide (IW) swath mode with approximately 10 m x 10 m pixel ground resolution.
+- **Recommended Video Guides**:
+  - [NASA ARSET: Fundamentals of Synthetic Aperture Radar (SAR)](https://www.youtube.com/watch?v=k5jGgDjg4fU) ([Search Guide](https://www.youtube.com/results?search_query=NASA+ARSET+Fundamentals+of+Synthetic+Aperture+Radar)) &mdash; Comprehensive introduction to SAR geometry, backscatter, and polarimetry.
+  - [European Space Agency (ESA): How Radar Satellite Imaging Works](https://www.youtube.com/watch?v=eE7T_cO_F0U) ([Search Guide](https://www.youtube.com/results?search_query=European+Space+Agency+How+Radar+Satellite+Imaging+Works)) &mdash; Visual explanation of radar pulse transmission and synthetic aperture synthesis.
+  - [ESA Earth Observation: Sentinel-1 Mission Overview](https://www.youtube.com/watch?v=Xn7xK_c9R4M) ([Search Guide](https://www.youtube.com/results?search_query=ESA+Sentinel-1+Mission+Overview)) &mdash; Detailed overview of Sentinel-1 operational modes (IW, EW, SM).
   - [ESA: Sentinel-1 Tracking Maritime Traffic & Silent Vessels](https://www.youtube.com/watch?v=845Uu6025_4) &mdash; Official European Space Agency briefing demonstrating satellite radar detection of dark vessels evading AIS transponders.
-  - [ESA: Copernicus Sentinel-1 Radar Vision](https://www.youtube.com/watch?v=FNtVln1SU1Q) &mdash; Explains C-band radar, all-weather imaging capabilities, and ground range synthesis.
-  - [NASA ARSET: Synthetic Aperture Radar Training Series](https://www.youtube.com/results?search_query=NASA+ARSET+Synthetic+Aperture+Radar) &mdash; NASA Applied Remote Sensing Training lectures covering SAR polarimetry, geometry, and backscatter interpretation.
 
 ### Pillar 2: Object Detection & ONNX Runtime CPU Inference
 
-Argos-Med must run on air-gapped patrol vessels equipped only with standard industrial laptops or embedded x86/ARM processors without high-end dedicated GPUs. To achieve our sub-30ms per tile latency budget, we employ ONNX Runtime and post-training quantization.
+Edge deployment requires converting neural network models into portable formats optimized for CPU execution.
 
-- **Neural Architecture (YOLOv8 Nano)**:
-  - YOLOv8n uses an anchor-free detection head, directly predicting bounding box offsets and objectness confidence scores without handcrafted anchor priors.
-  - The model processes $640 \times 640$ normalized SAR patches, outputting candidate bounding boxes $[x, y, w, h]$ and confidence scores $c \in [0, 1]$.
-- **Why ONNX Runtime Over Native PyTorch**:
-  - Native PyTorch introduces heavy Python interpreter overhead, extensive memory footprints (often exceeding 1 GB just to load the runtime), and complex dependency graphs.
-  - ONNX (Open Neural Network Exchange) serializes the computation into a static, optimized computation graph executed in C++ via ONNX Runtime (`onnxruntime`), reducing process memory to under 150 MB.
-- **Dynamic INT8 Quantization**:
-  - Standard neural networks store weights and activations as 32-bit floating point numbers (`float32`).
-  - INT8 quantization maps 32-bit floating point values into 8-bit integers (`int8`) via affine mapping: $q = \text{round}(x / S) + Z$.
-  - This shrinks the model size by 75% (from ~12 MB down to ~3.2 MB) and enables CPU SIMD vector instructions (AVX-512, AVX2, or ARM NEON) to compute 4x more matrix multiplications per clock cycle, slashing inference time to sub-30ms on commodity CPUs.
-- **Verified Video Guides & Tutorials**:
-  - [YOLOv8 Architecture & Object Detection Deep Dive](https://www.youtube.com/results?search_query=yolov8+architecture+explained) &mdash; Explains anchor-free detection heads, loss functions, and spatial pyramid pooling.
-  - [ONNX Runtime Python: High-Speed CPU Inference Guide](https://www.youtube.com/results?search_query=onnx+runtime+python+inference+cpu) &mdash; How to export models to `.onnx` and configure multi-threaded `CPUExecutionProvider` sessions.
-  - [Neural Network Quantization: FP32 to INT8 Optimization](https://www.youtube.com/results?search_query=quantization+onnx+runtime+int8) &mdash; Mathematical explanation of dynamic quantization and CPU hardware acceleration.
+- **Key Concepts**: YOLO architecture, anchor-free bounding box regression, Non-Maximum Suppression (NMS), ONNX graph optimization, INT8 dynamic post-training quantization, CPU execution providers.
+- **Deep-Dive Engineering Context**:
+  - **Anchor-Free YOLOv8 Nano**: YOLOv8n uses an anchor-free detection head, directly predicting bounding box offsets and objectness confidence scores without handcrafted anchor priors. The model processes $640 \times 640$ normalized SAR patches, outputting candidate bounding boxes $[x, y, w, h]$ and confidence scores $c \in [0, 1]$.
+  - **Why ONNX Runtime Over Native PyTorch**: Native PyTorch introduces heavy Python interpreter overhead, extensive memory footprints (often exceeding 1 GB just to load the runtime), and complex dependency graphs. ONNX (Open Neural Network Exchange) serializes the computation into a static, optimized computation graph executed in C++ via ONNX Runtime (`onnxruntime`), reducing process memory to under 150 MB.
+  - **Dynamic INT8 Quantization**: Standard neural networks store weights and activations as 32-bit floating point numbers (`float32`). INT8 quantization maps 32-bit floating point values into 8-bit integers (`int8`) via affine mapping: $q = \text{round}(x / S) + Z$. This shrinks the model size by 75% (from ~12 MB down to ~3.2 MB) and enables CPU SIMD vector instructions (AVX-512, AVX2, or ARM NEON) to compute 4x more matrix multiplications per clock cycle, slashing inference time to sub-30ms on commodity CPUs.
+- **Recommended Video Guides**:
+  - [YOLOv8 Architecture & Object Detection Deep Dive](https://www.youtube.com/results?search_query=yolov8+architecture+explained) &mdash; Architectural principles of modern real-time detectors.
+  - [ONNX Runtime Tutorial: High-Performance Python CPU Inference](https://www.youtube.com/results?search_query=onnx+runtime+python+inference+cpu) &mdash; Step-by-step model deployment with ONNX Runtime session options.
+  - [Neural Network Quantization: FP32 to INT8 Optimization](https://www.youtube.com/results?search_query=quantization+onnx+runtime+int8) &mdash; Mathematical explanation of dynamic quantization and CPU acceleration.
 
 ### Pillar 3: Geospatial Engineering & Rasterio Coordinates
 
-Neural detectors output bounding boxes in raw image matrix pixel indices: e.g., bounding box center at $(px = 450, py = 320)$. Maritime authorities and naval interceptors cannot navigate to a pixel coordinate; they require geographic coordinates (WGS84 latitude and longitude).
+Mapping pixel indices (row, col) from satellite matrices into global GPS coordinates (Lat, Lon) requires understanding Coordinate Reference Systems (CRS) and affine geometry.
 
-- **The Affine Transformation Matrix**:
-  - A georeferenced GeoTIFF contains an affine transform matrix encoding the relationship between image matrix space $(row, col)$ and geographic coordinates $(X, Y)$:
+- **Key Concepts**: Rasterio dataset model, Affine matrix multiplication, EPSG:4326 (WGS84) vs EPSG:3857 (Web Mercator), Ground Control Points (GCPs), pixel-to-meter scaling.
+- **Deep-Dive Engineering Context**:
+  - **The Affine Transformation Matrix**: A georeferenced GeoTIFF contains an affine transform matrix encoding the relationship between image matrix space $(col, row)$ and geographic coordinates $(X, Y)$:
     $$\begin{bmatrix} X \\ Y \end{bmatrix} = \begin{bmatrix} a & b & c \\ d & e & f \end{bmatrix} \begin{bmatrix} col \\ row \\ 1 \end{bmatrix}$$
-  - Here, $c$ is the longitude of the upper-left corner, $f$ is the latitude of the upper-left corner, $a$ is the pixel width in degrees, and $e$ is the pixel height (negative value going southward).
-  - Using `rasterio.transform.xy(dataset.transform, row, col)`, we translate pixel coordinates directly into WGS84 coordinates (EPSG:4326).
-- **Metric Vessel Geometry Estimation**:
-  - Because Sentinel-1 GRD imagery has a known nominal pixel spacing of 10 meters per pixel, bounding box dimensions in pixels directly correlate to physical vessel length and beam:
+    Here, $c$ is the longitude of the upper-left corner, $f$ is the latitude of the upper-left corner, $a$ is the pixel width in degrees, and $e$ is the pixel height (negative value going southward). Using `rasterio.transform.xy(dataset.transform, row, col)`, we translate pixel coordinates directly into WGS84 coordinates (EPSG:4326).
+  - **Metric Vessel Geometry Estimation**: Because Sentinel-1 GRD imagery has a known nominal pixel spacing of 10 meters per pixel, bounding box dimensions in pixels directly correlate to physical vessel length and beam:
     $$\text{Estimated Length (meters)} = \text{Box Height (pixels)} \times 10\text{ m}$$
     $$\text{Estimated Beam (meters)} = \text{Box Width (pixels)} \times 10\text{ m}$$
-- **Verified Video Guides & Tutorials**:
+- **Recommended Video Guides**:
+  - [Rasterio in Python: Reading and Georeferencing Satellite GeoTIFFs](https://www.youtube.com/results?search_query=rasterio+python+tutorial+geotiff) &mdash; Practical guide to affine transforms and spatial metadata handling.
+  - [GIS Foundations: Coordinate Reference Systems (CRS) Explained](https://www.youtube.com/results?search_query=coordinate+reference-systems+explained+epsg) &mdash; Essential cartographic theory: Datums, Ellipsoids, and Projections.
   - [freeCodeCamp: Geospatial Python with GeoPandas and Rasterio](https://www.youtube.com/watch?v=Pj5A4k6_2i0) &mdash; Complete 2-hour crash course on reading satellite rasters, manipulating affine matrices, and handling GIS layers in Python.
-  - [Rasterio in Python: Satellite GeoTIFFs & Affine Transforms](https://www.youtube.com/results?search_query=rasterio+python+tutorial+geotiff) &mdash; Hands-on guide to inspecting GeoTIFF metadata and converting raster coordinates.
-  - [Coordinate Reference Systems (CRS) Explained: EPSG:4326 vs EPSG:3857](https://www.youtube.com/results?search_query=coordinate+reference+systems+explained+epsg) &mdash; Foundational cartography covering datums, ellipsoids, and projected coordinate systems.
 
 ### Pillar 4: Spatial Indexing & cKDTree Nearest-Neighbor Search
 
-A single operational maritime sector may record thousands of AIS position messages alongside tens of radar detections. Correlating them via brute-force distance calculations is computationally prohibitive.
+Searching millions of AIS transponder records against radar detections naively takes O(N x M) comparisons. Spatial indexing with k-d trees reduces this search to O(log N).
 
-- **The Computational Bottleneck**:
-  - Comparing $N$ radar detections against $M$ AIS transponder positions naively requires $N \times M$ pairwise distance evaluations ($\mathcal{O}(N \times M)$). For thousands of targets, this causes intolerable latency on edge processors.
-- **$k$-d Tree (k-Dimensional Tree) Partitioning**:
-  - A $k$-d tree is a space-partitioning data structure that hierarchically divides $k$-dimensional space into nested hyperrectangles.
-  - Building the tree with `scipy.spatial.cKDTree` takes $\mathcal{O}(M \log M)$, and querying nearest neighbors within a given search radius takes only $\mathcal{O}(\log M)$ per detection.
-- **Equirectangular Planar Metric Projection**:
-  - Raw latitude and longitude degrees cannot be directly compared using standard Euclidean distance formulas because the length of one degree of longitude decreases with the cosine of latitude as one moves toward the poles.
-  - We project coordinates into a local metric tangent plane centered at the target corridor latitude ($\phi_0 \approx 43.2^\circ$ for Marseille, $\phi_0 \approx 35.7^\circ$ for Oran):
+- **Key Concepts**: Binary space partitioning, k-d tree construction, Euclidean vs Geodesic distance, Equirectangular metric planar projection, nearest-neighbor radius query.
+- **Deep-Dive Engineering Context**:
+  - **The Computational Bottleneck**: Comparing $N$ radar detections against $M$ AIS transponder positions naively requires $N \times M$ pairwise distance evaluations ($\mathcal{O}(N \times M)$). For thousands of targets, this causes intolerable latency on edge processors.
+  - **k-d Tree Partitioning**: A $k$-d tree is a space-partitioning data structure that hierarchically divides $k$-dimensional space into nested hyperrectangles. Building the tree with `scipy.spatial.cKDTree` takes $\mathcal{O}(M \log M)$, and querying nearest neighbors within a given search radius takes only $\mathcal{O}(\log M)$ per detection.
+  - **Equirectangular Planar Metric Projection**: Raw latitude and longitude degrees cannot be directly compared using standard Euclidean distance formulas because the length of one degree of longitude decreases with the cosine of latitude as one moves toward the poles. We project coordinates into a local metric tangent plane centered at the target corridor latitude ($\phi_0 \approx 43.2^\circ$ for Marseille, $\phi_0 \approx 35.7^\circ$ for Oran):
     $$x_m = (\lambda - \lambda_0) \times \frac{\pi}{180} \times R \times \cos(\phi_0)$$
     $$y_m = (\phi - \phi_0) \times \frac{\pi}{180} \times R$$
-    where $R = 6,371,000\text{ m}$ is the mean Earth radius.
-  - In metric coordinates, a spatial correlation radius threshold of $r = 500\text{ meters}$ reliably accounts for GPS transponder timing latency and satellite pass time offsets.
-  - Detections with zero AIS matches within 500 meters are classified as `DARK_VESSEL`.
-- **Marine Protected Area (MPA) Collision Detection**:
-  - Detected vessel coordinates are evaluated against polygon boundaries of marine sanctuaries (e.g., *Parc National des Calanques* in Marseille, *Réserve Naturelle des Îles Habibas* in Oran) using point-in-polygon queries to detect illegal fishing or unauthorized anchorage.
-- **Verified Video Guides & Tutorials**:
-  - [k-d Tree Data Structure: Visual Multidimensional Partitioning](https://www.youtube.com/results?search_query=kd+tree+data+structure+explained) &mdash; Visual animation explaining how binary spatial partitioning accelerates nearest-neighbor lookups.
-  - [SciPy Spatial cKDTree: High-Speed Geographic Point Matching](https://www.youtube.com/results?search_query=scipy+spatial+ckdtree+tutorial) &mdash; Python implementation demonstrating sub-millisecond point correlation with `cKDTree`.
+    where $R = 6,371,000\text{ m}$ is the mean Earth radius. In metric coordinates, a spatial correlation radius threshold of $r = 500\text{ meters}$ reliably accounts for GPS transponder timing latency and satellite pass time offsets. Detections with zero AIS matches within 500 meters are classified as `DARK_VESSEL`.
+  - **Marine Protected Area (MPA) Collision Detection**: Detected vessel coordinates are evaluated against polygon boundaries of marine sanctuaries (e.g., *Parc National des Calanques* in Marseille, *Réserve Naturelle des Îles Habibas* in Oran) using point-in-polygon queries to detect illegal fishing or unauthorized anchorage.
+- **Recommended Video Guides**:
+  - [k-d Trees Data Structure: Theory and Spatial Search](https://www.youtube.com/results?search_query=kd+tree+data+structure+explained) &mdash; Intuitive visual explanation of multidimensional spatial partitioning.
+  - [SciPy Spatial cKDTree: High-Speed Geometric Matching in Python](https://www.youtube.com/results?search_query=scipy+spatial+ckdtree+tutorial) &mdash; Python implementation for sub-millisecond point correlation.
 
 ### Pillar 5: Local Offline SLMs & Quantization (Ollama / llama.cpp)
 
-Raw numeric outputs (latitude, longitude, RCS, matching residuals) require mental translation by bridge watchstanders under time pressure. Argos-Med integrates an onboard Small Language Model (SLM) to autonomously generate standardized naval situation reports (SITREPs).
+Running Small Language Models on commodity CPUs without cloud APIs allows air-gapped systems to generate natural language intelligence reports securely.
 
-- **Why LLaMA 3.2 1B**:
-  - Meta's LLaMA 3.2 1B model delivers exceptional instruction-following capability in an ultra-compact footprint.
-  - Quantized to 4-bit GGUF (`Q4_K_M`), the entire model occupies only ~1.3 GB of RAM, fitting comfortably within standard 8 GB or 16 GB laptop memory alongside the detection engine.
-- **Zero-Cloud Sovereignty**:
-  - The model runs strictly on `localhost` (`http://127.0.0.1:11434`) via Ollama or an embedded `llama.cpp` binary. No data leaves the vessel, ensuring compliance with military operational security and the EU AI Act.
-- **Structured Tactical Prompts**:
-  - The Python engine formats detected incident telemetry into structured JSON (Target ID, coordinates, radar confidence, estimated length, AIS correlation status, nearest port, MPA boundary violation).
-  - The SLM is instructed via system prompt to adhere strictly to NATO STANAG 1059 / French Marine Nationale SITREP formatting.
-- **Deterministic Fallback Engine**:
-  - To prevent mission failure if the local LLM daemon is offline or under high load, a deterministic template-based generator provides identical SITREP formatting with zero external dependencies.
-- **Verified Video Guides & Tutorials**:
-  - [Meta LLaMA 3.2: 1B and 3B Edge Models Architecture](https://www.youtube.com/results?search_query=llama+3.2+1b+3b+overview) &mdash; Overview of edge model capabilities, token efficiency, and local hardware requirements.
-  - [Run LLMs 100% Offline with Ollama and llama.cpp](https://www.youtube.com/results?search_query=ollama+local+llm+offline+tutorial) &mdash; Step-by-step setup for running local quantized GGUF models on CPU without internet.
-  - [Structured JSON Outputs from Local LLMs](https://www.youtube.com/results?search_query=structured+outputs+local+llm+ollama) &mdash; Enforcing strict schema adherence for automated report generation.
+- **Key Concepts**: LLaMA 3.2 1B architecture, GGUF binary format, 4-bit quantization (Q4_K_M), llama.cpp inference engine, Ollama local REST API, prompt engineering for structured outputs.
+- **Deep-Dive Engineering Context**:
+  - **Why LLaMA 3.2 1B**: Meta's LLaMA 3.2 1B model delivers exceptional instruction-following capability in an ultra-compact footprint. Quantized to 4-bit GGUF (`Q4_K_M`), the entire model occupies only ~1.3 GB of RAM, fitting comfortably within standard 8 GB or 16 GB laptop memory alongside the detection engine.
+  - **Zero-Cloud Sovereignty**: The model runs strictly on `localhost` (`http://127.0.0.1:11434`) via Ollama or an embedded `llama.cpp` binary. No data leaves the vessel, ensuring compliance with military operational security and the EU AI Act.
+  - **Structured Tactical Prompts**: The Python engine formats detected incident telemetry into structured JSON (Target ID, coordinates, radar confidence, estimated length, AIS correlation status, nearest port, MPA boundary violation). The SLM is instructed via system prompt to adhere strictly to NATO STANAG 1059 / French Marine Nationale SITREP formatting.
+  - **Deterministic Fallback Engine**: To prevent mission failure if the local LLM daemon is offline or under high load, a deterministic template-based generator provides identical SITREP formatting with zero external dependencies.
+- **Recommended Video Guides**:
+  - [Meta LLaMA 3.2 Overview: 1B and 3B Edge Models](https://www.youtube.com/results?search_query=llama+3.2+1b+3b+overview) &mdash; Architectural capabilities and edge benchmark performance.
+  - [Run LLMs 100% Offline with Ollama and llama.cpp](https://www.youtube.com/results?search_query=ollama+local+llm+offline+tutorial) &mdash; Setting up air-gapped local model inference with zero internet dependency.
+  - [Structured JSON Outputs from Local LLMs](https://www.youtube.com/results?search_query=structured+outputs+local+llm+ollama) &mdash; Constraining generative outputs into deterministic formats.
 
 ### Pillar 6: Tactical Dark-Mode Interfaces & Leaflet.js Mapping
 
-Naval bridge environments operate under low red or blue ambient light to preserve watchstanders' night vision. The Argos-Med user interface is built as a high-contrast tactical Command and Control (C2) dashboard.
+Building command and control interfaces for night-time bridge environments requires high-contrast, low-glare cartography.
 
-- **Tactical Symbology**:
-  - **Verified Vessels (Cooperative)**: Rendered as static emerald green markers (`#00e676`), indicating confirmed AIS transponder match.
-  - **Dark Vessels (Non-Cooperative)**: Rendered with animated pulsing crimson rings (`#ff1744`), immediately drawing operator attention to high-risk anomalous contacts.
-  - **Marine Protected Areas (MPAs)**: Rendered with amber dashed polygon boundaries (`#ff9100`) with semi-transparent fills.
-- **Live Hardware Telemetry HUD**:
-  - A real-time telemetry bar displays CPU utilization, RAM consumption, inference latency (ms), and an active "100% AIR-GAPPED // ZERO CLOUD" status beacon.
-- **Offline Leaflet.js Deployment**:
-  - Leaflet vector rendering runs entirely from local JavaScript and CSS bundles without CDN connections, consuming GeoJSON layers generated by the FastAPI backend.
-- **Verified Video Guides & Tutorials**:
-  - [freeCodeCamp: Web Mapping with Leaflet & GeoJSON](https://www.youtube.com/watch?v=F3G164o3L2o) &mdash; Complete video tutorial on building interactive map applications and loading GeoJSON data layers.
-  - [Leaflet.js Custom Markers, Dark Basemaps & Styling](https://www.youtube.com/results?search_query=leaflet+js+tutorial+geojson) &mdash; Hands-on guide to dark basemaps, custom pulsing CSS markers, and GeoJSON polygon styling.
-  - [Tactical Command & Control (C2) Dashboard UI Design](https://www.youtube.com/results?search_query=command+and+control+dashboard+ui+design) &mdash; Visual hierarchy, contrast, and cognitive load management in naval and aerospace operations.
+- **Key Concepts**: Leaflet.js vector layers, GeoJSON FeatureCollections, HTML5 Canvas radar sweeps, dark cartographic styling, real-time telemetry HUD integration.
+- **Deep-Dive Engineering Context**:
+  - **Tactical Symbology**: Verified Vessels (Cooperative) are rendered as static emerald green markers (`#00e676`), indicating confirmed AIS transponder match. Dark Vessels (Non-Cooperative) are rendered with animated pulsing crimson rings (`#ff1744`), immediately drawing operator attention to high-risk anomalous contacts. Marine Protected Areas (MPAs) are rendered with amber dashed polygon boundaries (`#ff9100`) with semi-transparent fills.
+  - **Live Hardware Telemetry HUD**: A real-time telemetry bar displays CPU utilization, RAM consumption, inference latency (ms), and an active "100% AIR-GAPPED // ZERO CLOUD" status beacon.
+  - **Offline Leaflet.js Deployment**: Leaflet vector rendering runs entirely from local JavaScript and CSS bundles without CDN connections, consuming GeoJSON layers generated by the FastAPI backend.
+- **Recommended Video Guides**:
+  - [Leaflet.js Full Crash Course: Interactive Maps & GeoJSON](https://www.youtube.com/results?search_query=leaflet+js+tutorial+geojson) &mdash; Complete guide to building web maps with custom vector styling.
+  - [Building Real-Time Command & Control (C2) Dashboards](https://www.youtube.com/results?search_query=command+and+control+dashboard+ui+design) &mdash; Tactical HUD design principles for military and maritime operations.
+  - [freeCodeCamp: Web Mapping with Leaflet & GeoJSON](https://www.youtube.com/watch?v=F3G164o3L2o) &mdash; Full video tutorial on building interactive map applications and loading GeoJSON data layers.
 
 ---
 
