@@ -1,7 +1,7 @@
-# Argos-Med: Offline Edge-Native Maritime Surveillance System
+# Argos-Med: Offline Edge-Native Maritime Domain Awareness System
 # Production Dependencies for CPU / Edge Acceleration
 
-numpy>=1.24.0,<2.0.0
+numpy>=1.24.0
 scipy>=1.11.0
 onnxruntime>=1.17.0
 rasterio>=1.3.9
@@ -11,4 +11,6 @@ uvicorn[standard]>=0.28.0
 pydantic>=2.6.0
 psutil>=5.9.8
 requests>=2.31.0
+websockets>=12.0
+tifffile>=2024.1.1
 python-multipart>=0.0.9

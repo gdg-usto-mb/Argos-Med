@@ -1,0 +1,69 @@
+{
+  "type": "FeatureCollection",
+  "name": "EuroMed_Marine_Protected_Areas",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Parc National des Calanques",
+        "jurisdiction": "France (Région Sud)",
+        "restriction_level": "Strict Marine Sanctuary / No Bunkering / Speed Limit 12 knots",
+        "radius_km": 8.5
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [5.350, 43.160],
+            [5.550, 43.160],
+            [5.550, 43.230],
+            [5.350, 43.230],
+            [5.350, 43.160]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Archipel du Frioul Marine Buffer",
+        "jurisdiction": "France (Marseille)",
+        "restriction_level": "Port Approach Safety Buffer",
+        "radius_km": 4.2
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [5.260, 43.260],
+            [5.320, 43.260],
+            [5.320, 43.300],
+            [5.260, 43.300],
+            [5.260, 43.260]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Reserve Naturelle Marine des Iles Habibas",
+        "jurisdiction": "Algeria (Wilaya d'Oran)",
+        "restriction_level": "Total Ecological Sanctuary / Strict Fishing Ban",
+        "radius_km": 6.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-1.190, 35.680],
+            [-1.070, 35.680],
+            [-1.070, 35.760],
+            [-1.190, 35.760],
+            [-1.190, 35.680]
+          ]
+        ]
+      }
+    }
+  ]
+}
